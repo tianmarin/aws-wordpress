@@ -1,0 +1,80 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Reference Architecture to host WordPress on AWS - Creates VPC security groups
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: AWS Parameters
+      Parameters:
+        - Vpc
+    ParameterLabels:
+      Vpc:
+        default: Vpc Id
+
+Parameters:
+  Vpc:
+    AllowedPattern: ^(vpc-)([a-z0-9]{8})$
+    Description: The Vpc Id of an existing Vpc.
+    Type: AWS::EC2::VPC::Id
+
+Resources:
+
+  BastionSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for Bastion instances
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      VpcId:
+        !Ref Vpc
+
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for Amazon RDS cluster
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          SourceSecurityGroupId: !Ref WebSecurityGroup
+      VpcId:
+        !Ref Vpc
+
+  EfsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for EFS mount targets
+      VpcId: !Ref Vpc
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 2049
+          ToPort: 2049
+          SourceSecurityGroupId: !Ref WebSecurityGroup
+
+  WebSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for web instances
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          SourceSecurityGroupId: !Ref BastionSecurityGroup
+      VpcId:
+        !Ref Vpc
+
+Outputs:
+  BastionSecurityGroup:
+    Value: !Ref BastionSecurityGroup
+  DatabaseSecurityGroup:
+    Value: !Ref DatabaseSecurityGroup
+  EfsSecurityGroup:
+    Value: !Ref EfsSecurityGroup
+  WebSecurityGroup:
+    Value: !Ref WebSecurityGroup

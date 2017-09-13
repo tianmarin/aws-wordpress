@@ -10,12 +10,45 @@ __Production Environment__
 * Auto Minor Version Upgrade (No)
 * Database Encryption (Yes)
 
+
+* Master
+	* AWS::CloudFormation::Stack
+* VPC
+	* AWS::EC2::VPC
+	* AWS::EC2::Subnet
+	* AWS::EC2::SubnetRouteTableAssociation
+	* AWS::EC2::VPCGatewayAttachment
+	* AWS::EC2::InternetGateway
+	* AWS::EC2::EIP
+	* AWS::EC2::NatGateway
+	* AWS::EC2::Route
+	* AWS::EC2::RouteTable
+	* AWS::EC2::FlowLog :calendar:
+* Security Groups
+	* AWS::EC2::SecurityGroup
+* Bastion
+	* AWS::AutoScaling::AutoScalingGroup
+	* AWS::AutoScaling::LaunchConfiguration
+	* AWS::IAM::InstanceProfile
+	* AWS::IAM::Role
+* EFS
+	* AWS::EFS::FileSystem
+	* AWS::EFS::MountTarget
+* RDS
+	* AWS::RDS::DBCluster
+	* AWS::RDS::DBInstance
+	* AWS::RDS::DBSubnetGroup
+* Web Servers
+	* AWS::ECS::Cluster
+	* AWS::ECS::TaskDefinition
+	* AWS::ECS::Service
+
 # Master Template
 ## Input Parameters
 
-### System 
+### System
 
-* Production Eviroment 
+* Production Eviroment
 
 ### AWS Parameters
 
@@ -77,5 +110,5 @@ Server version: 5.6.10-log MySQL Community Server (GPL)
 
 Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
 
-mysql> 
+mysql>
 ```
